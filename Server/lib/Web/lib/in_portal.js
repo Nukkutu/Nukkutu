@@ -51,7 +51,7 @@
 		});
 		$stage.ref.on('click', function(e){
 			if($stage.refi.hasClass("fa-spin")){
-				return alert(L['serverWait']);
+				return;
 			}
 			$stage.refi.addClass("fa-spin");
 			setTimeout(seekServers, 1000);
