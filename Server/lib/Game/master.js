@@ -77,6 +77,9 @@ function processAdmin(id, value){
 		return p2;
 	});
 	switch(cmd){
+		case "stop":
+			process.exit();
+			return null;
 		case "yell":
 			KKuTu.publish('yell', { value: value });
 			return null;
@@ -103,6 +106,23 @@ function processAdmin(id, value){
 				}else T_USER[value] = id;
 				temp.send('test');
 				if(DIC[id]) DIC[id].send('tail', { a: i ? "tuX" : "tu", rid: temp.id, id: id, msg: temp.getData() });
+			}
+			return null;
+		case "getroom":
+			if (ROOM[value]) {
+				DIC[id].send("yell", { value: JSON.stringify(ROOM[value].getData()) });
+			}
+			return null;
+		case "setroom":
+			var args = value.split(",");
+			if (args.length == 3) {
+				if (ROOM[args[0]]) {
+					var room = ROOM[args[0]];
+					var got = { title: room.title, password: room.password, limit: room.limit, mode: room.mode, round: room.round, time: room.time / room.rule.time, opts: room.opts };
+					got[args[1]] = args[2];
+					room.set(got);
+					KKuTu.publish("room", { target: room.master, room: room.getData(), modify: true }, room.password);
+				}
 			}
 			return null;
 		case "dump":

@@ -1,2 +1,31 @@
 This is an error log file of the game server.
 You may use like `tail -f KKUTU_ERROR.log` to watch this.
+:8496 [9/30/2022, 9:26:53 AM] ERROR: error: terminating connection due to administrator command
+error: terminating connection due to administrator command
+    at Parser.parseErrorMessage (C:\Users\papakia\Desktop\Nukkutu\Server\lib\node_modules\pg-protocol\dist\parser.js:287:98)
+    at Parser.handlePacket (C:\Users\papakia\Desktop\Nukkutu\Server\lib\node_modules\pg-protocol\dist\parser.js:126:29)
+    at Parser.parse (C:\Users\papakia\Desktop\Nukkutu\Server\lib\node_modules\pg-protocol\dist\parser.js:39:38)
+    at Socket.<anonymous> (C:\Users\papakia\Desktop\Nukkutu\Server\lib\node_modules\pg-protocol\dist\index.js:11:42)
+    at Socket.emit (node:events:513:28)
+    at addChunk (node:internal/streams/readable:315:12)
+    at readableAddChunk (node:internal/streams/readable:289:9)
+    at Socket.Readable.push (node:internal/streams/readable:228:10)
+    at TCP.onStreamRead (node:internal/stream_base_commons:190:23):8496 [9/30/2022, 9:26:53 AM] ERROR: Error: read ECONNRESET
+Error: read ECONNRESET
+    at TCP.onStreamRead (node:internal/stream_base_commons:217:20):8496 [9/30/2022, 9:26:53 AM] ERROR: Error: Connection terminated unexpectedly
+Error: Connection terminated unexpectedly
+    at Connection.<anonymous> (C:\Users\papakia\Desktop\Nukkutu\Server\lib\node_modules\pg\lib\client.js:132:73)
+    at Object.onceWrapper (node:events:627:28)
+    at Connection.emit (node:events:513:28)
+    at Socket.<anonymous> (C:\Users\papakia\Desktop\Nukkutu\Server\lib\node_modules\pg\lib\connection.js:57:12)
+    at Socket.emit (node:events:513:28)
+    at TCP.<anonymous> (node:net:757:14):8496 [9/30/2022, 9:26:53 AM] ERROR: Error: read ECONNRESET
+Error: read ECONNRESET
+    at TCP.onStreamRead (node:internal/stream_base_commons:217:20):8496 [9/30/2022, 9:26:53 AM] ERROR: Error: Connection terminated unexpectedly
+Error: Connection terminated unexpectedly
+    at Connection.<anonymous> (C:\Users\papakia\Desktop\Nukkutu\Server\lib\node_modules\pg\lib\client.js:132:73)
+    at Object.onceWrapper (node:events:627:28)
+    at Connection.emit (node:events:513:28)
+    at Socket.<anonymous> (C:\Users\papakia\Desktop\Nukkutu\Server\lib\node_modules\pg\lib\connection.js:57:12)
+    at Socket.emit (node:events:513:28)
+    at TCP.<anonymous> (node:net:757:14)

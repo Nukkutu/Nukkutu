@@ -126,7 +126,7 @@ DB.ready = function(){
 	}, 600000);
 	setInterval(function(){
 		gameServers.forEach(function(v){
-			if(v.socket) v.socket.send(`{"type":"seek"}`);
+			if(v.socket && v.socket.readyState === WS.OPEN) v.socket.send(`{"type":"seek"}`);
 			else v.seek = undefined;
 		});
 	}, 4000);
@@ -183,6 +183,9 @@ function GameClient(id, url){
 		JLog.error(`Game server #${my.id} closed: ${code}`);
 		my.socket.removeAllListeners();
 		delete my.socket;
+		setTimeout(() => {
+			gameServers[gameServers.findIndex(gameServer => gameServer === my)] = new GameClient(id, url);
+		}, 5000);
 	});
 	my.socket.on('message', function(data){
 		var _data = data;

@@ -89,8 +89,13 @@ exports.send = (...argv) => {
 	// override this
 };
 
+let webServer, gameServers;
+
 class ChildProcess{
 	constructor(id, cmd, ...argv){
+		this.id = id;
+		this.cmd = cmd;
+		this.argv = argv;
 		this.process = Spawn(cmd, argv);
 		this.process.stdout.on('data', msg => {
 			exports.send('log', 'n', msg);
@@ -108,13 +113,21 @@ class ChildProcess{
 
 			exports.send('log', 'e', msg);
 			exports.send('server-status', getServerStatus());
+			
+			if (!this.killed) {
+				setTimeout(() => {
+					gameServers[gameServers.findIndex(gameServer => gameServer === this)] = new this.constructor(id, cmd, ...argv);
+				}, 5000);
+			}
 		});
 	}
 	kill(sig){
-		if(this.process) this.process.kill(sig || 'SIGINT');
+		if(this.process) {
+			this.process.kill(sig || 'SIGINT');
+			this.killed = true;
+		}
 	}
 }
-let webServer, gameServers;
 
 function startServer(){
 	stopServer();
@@ -126,7 +139,6 @@ function startServer(){
 	for(let i=0; i<SETTINGS['game-num-inst']; i++){
 		gameServers.push(new ChildProcess('G', "node", `${__dirname}/lib/Game/cluster.js`, i, SETTINGS['game-num-cpu']));
 	}
-	exports.send('server-status', getServerStatus());
 }
 function stopServer(){
 	if(webServer) webServer.kill();
@@ -137,3 +149,4 @@ function getServerStatus(){
 	if(webServer.process && gameServers.every(v => v.process)) return 2;
 	return 1;
 }
+setInterval(() => exports.send('server-status', getServerStatus()), 1000);

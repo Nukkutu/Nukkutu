@@ -1959,6 +1959,58 @@ function applyOptions(opt){
 			$data.bgm = playBGM($data.bgm.key, true);
 		}
 	}
+	
+	if ($data.opts.theme === "light") {
+		document.documentElement.style.setProperty("--c1", "#FFFFFF");
+		document.documentElement.style.setProperty("--c2", "#EEEEEE");
+		document.documentElement.style.setProperty("--c3", "#DDDDDD");
+		document.documentElement.style.setProperty("--c4", "#CCCCCC");
+		document.documentElement.style.setProperty("--c5", "#BBBBBB");
+		document.documentElement.style.setProperty("--c6", "#AAAAAA");
+		document.documentElement.style.setProperty("--c7", "#999999");
+		document.documentElement.style.setProperty("--c8", "#888888");
+		document.documentElement.style.setProperty("--c9", "#777777");
+		document.documentElement.style.setProperty("--c10", "#666666");
+		document.documentElement.style.setProperty("--c11", "#555555");
+		document.documentElement.style.setProperty("--c12", "#444444");
+		document.documentElement.style.setProperty("--c13", "#333333");
+		document.documentElement.style.setProperty("--c14", "#222222");
+		document.documentElement.style.setProperty("--c15", "#111111");
+		document.documentElement.style.setProperty("--c16", "#000000");
+		document.documentElement.style.setProperty("--c17", "#232323");
+		document.documentElement.style.setProperty("--c18", "#141414");
+		document.documentElement.style.setProperty("--c19", "#E4E4E4");
+		document.documentElement.style.setProperty("--c20", "#F4F4F4");
+		document.documentElement.style.setProperty("--c21", "#D0D0D0");
+		document.documentElement.style.setProperty("--c22", "#C7C7C7");
+		document.documentElement.style.setProperty("--c23", "#F2F2F2");
+		document.documentElement.style.setProperty("--c24", "#FAFAFA");
+	} else if ($data.opts.theme === "dark") {
+		document.documentElement.style.setProperty("--c1", "#000000");
+		document.documentElement.style.setProperty("--c2", "#111111");
+		document.documentElement.style.setProperty("--c3", "#222222");
+		document.documentElement.style.setProperty("--c4", "#333333");
+		document.documentElement.style.setProperty("--c5", "#444444");
+		document.documentElement.style.setProperty("--c6", "#555555");
+		document.documentElement.style.setProperty("--c7", "#666666");
+		document.documentElement.style.setProperty("--c8", "#777777");
+		document.documentElement.style.setProperty("--c9", "#888888");
+		document.documentElement.style.setProperty("--c10", "#999999");
+		document.documentElement.style.setProperty("--c11", "#AAAAAA");
+		document.documentElement.style.setProperty("--c12", "#BBBBBB");
+		document.documentElement.style.setProperty("--c13", "#CCCCCC");
+		document.documentElement.style.setProperty("--c14", "#DDDDDD");
+		document.documentElement.style.setProperty("--c15", "#EEEEEE");
+		document.documentElement.style.setProperty("--c16", "#FFFFFF");
+		document.documentElement.style.setProperty("--c17", "#DCDCDC");
+		document.documentElement.style.setProperty("--c18", "#EBEBEB");
+		document.documentElement.style.setProperty("--c19", "#1B1B1B");
+		document.documentElement.style.setProperty("--c20", "#0B0B0B");
+		document.documentElement.style.setProperty("--c21", "#2F2F2F");
+		document.documentElement.style.setProperty("--c22", "#383838");
+		document.documentElement.style.setProperty("--c23", "#0D0D0D");
+		document.documentElement.style.setProperty("--c24", "#050505");
+	}
 }
 function checkInput(){
 	/*var v = $stage.talk.val();
