@@ -1,24 +1,24 @@
 /**
  * Rule the words! KKuTu Online
  * Copyright (C) 2017 JJoriping(op@jjo.kr)
- * 
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
 $(document).ready(function(){
 	var i;
-	
+
 	$data.PUBLIC = $("#PUBLIC").html() == "true";
 	$data.URL = $("#URL").html();
 	$data.version = $("#version").html();
@@ -69,7 +69,8 @@ $(document).ready(function(){
 			exit: $("#ExitBtn"),
 			notice: $("#NoticeBtn"),
 			replay: $("#ReplayBtn"),
-			leaderboard: $("#LeaderboardBtn")
+			leaderboard: $("#LeaderboardBtn"),
+			gwalli: $("#GwalliBtn")
 		},
 		dialog: {
 			setting: $("#SettingDiag"),
@@ -129,7 +130,8 @@ $(document).ready(function(){
 			chatLog: $("#ChatLogDiag"),
 			obtain: $("#ObtainDiag"),
 				obtainOK: $("#obtain-ok"),
-			help: $("#HelpDiag")
+			help: $("#HelpDiag"),
+			gwalli: $("#GwalliDiag")
 		},
 		box: {
 			chat: $(".ChatBox"),
@@ -188,7 +190,7 @@ $(document).ready(function(){
 		processShop(connect);
 	});
 	delete $data._soundList;
-	
+
 	MOREMI_PART = $("#MOREMI_PART").html().split(',');
 	AVAIL_EQUIP = $("#AVAIL_EQUIP").html().split(',');
 	RULE = JSON.parse($("#RULE").html());
@@ -200,12 +202,12 @@ $(document).ready(function(){
 		return $data._turnTime / $data.turnTime * 100 + "%";
 	} : function(){
 		var pos = $data._turnSound.audio ? $data._turnSound.audio.currentTime : (audioContext.currentTime - $data._turnSound.startedAt);
-		
+
 		return (100 - pos/$data.turnTime*100000) + "%";
 	};
 	$data.setRoom = function(id, data){
 		var isLobby = getOnly() == "for-lobby";
-		
+
 		if(data == null){
 			delete $data.rooms[id];
 			if(isLobby) $("#room-" + id).remove();
@@ -221,7 +223,7 @@ $(document).ready(function(){
 		var only = getOnly();
 		var needed = only == "for-lobby" || only == "for-master";
 		var $obj;
-		
+
 		if($data._replay){
 			$rec.users[id] = data;
 			return;
@@ -232,7 +234,7 @@ $(document).ready(function(){
 		}else{
 			if(needed && !$data.users[id]){
 				$obj = userListBar(data, only == "for-master");
-				
+
 				if(only == "for-master") $stage.dialog.inviteList.append($obj);
 				else $stage.lobby.userList.append($obj);
 			}
@@ -267,7 +269,7 @@ $(document).ready(function(){
 	}
 	$(".dialog-head .dialog-title").on('mousedown', function(e){
 		var $pd = $(e.currentTarget).parents(".dialog");
-		
+
 		$(".dialog-front").removeClass("dialog-front");
 		$pd.addClass("dialog-front");
 		startDrag($pd, e.pageX, e.pageY);
@@ -277,7 +279,7 @@ $(document).ready(function(){
 	// addInterval(checkInput, 1);
 	$stage.chatBtn.on('click', function(e){
 		checkInput();
-		
+
 		var value = (mobile && $stage.game.here.is(':visible'))
 			? $stage.game.hereText.val()
 			: $stage.talk.val();
@@ -305,7 +307,7 @@ $(document).ready(function(){
 			var $target = $(e.currentTarget);
 			var value = $target.val();
 			var o = { relay: true, data: $data._sel, value: value };
-			
+
 			if(!value) return;
 			send('talk', o);
 			$target.val("");
@@ -317,7 +319,7 @@ $(document).ready(function(){
 	$("#room-limit").on('change', function(e){
 		var $target = $(e.currentTarget);
 		var value = $target.val();
-		
+
 		if(value < 2 || value > 8){
 			$target.css('color', "#FF4444");
 		}else{
@@ -327,7 +329,7 @@ $(document).ready(function(){
 	$("#room-round").on('change', function(e){
 		var $target = $(e.currentTarget);
 		var value = $target.val();
-		
+
 		if(value < 1 || value > 10){
 			$target.css('color', "#FF4444");
 		}else{
@@ -347,7 +349,7 @@ $(document).ready(function(){
 		var pos = $diag.position();
 		$(window).on('mousemove', function(e){
 			var dx = e.pageX - sx, dy = e.pageY - sy;
-			
+
 			$diag.css('left', pos.left + dx);
 			$diag.css('top', pos.top + dy);
 		});
@@ -362,7 +364,7 @@ $(document).ready(function(){
 // 메뉴 버튼
 	for(i in $stage.dialog){
 		if($stage.dialog[i].children(".dialog-head").hasClass("no-close")) continue;
-		
+
 		$stage.dialog[i].children(".dialog-head").append($("<div>").addClass("closeBtn").on('click', function(e){
 			$(e.currentTarget).parent().parent().hide();
 		}).hotkey(false, 27));
@@ -380,17 +382,17 @@ $(document).ready(function(){
 	});
 	$stage.dialog.commFriendAdd.on('click', function(e){
 		var id = prompt(L['friendAddNotice']);
-		
+
 		if(!id) return;
 		if(!$data.users[id]) return fail(450);
-		
+
 		send('friendAdd', { target: id }, true);
 	});
 	$stage.menu.newRoom.on('click', function(e){
 		var $d;
-		
+
 		$stage.dialog.quick.hide();
-		
+
 		$data.typeRoom = 'enter';
 		showDialog($d = $stage.dialog.room);
 		$d.find(".dialog-title").html(L['newRoom']);
@@ -399,7 +401,7 @@ $(document).ready(function(){
 		var $d;
 		var rule = RULE[MODE[$data.room.mode]];
 		var i, k;
-		
+
 		$data.typeRoom = 'setRoom';
 		$("#room-title").val($data.room.title);
 		$("#room-limit").val($data.room.limit);
@@ -414,9 +416,13 @@ $(document).ready(function(){
 		showDialog($d = $stage.dialog.room);
 		$d.find(".dialog-title").html(L['setRoom']);
 	});
+	$stage.menu.gwalli.on('click', function(e){
+		if(!$("#gwalli-board").attr('src')) $("#gwalli-board").attr('src', "/gwalli");
+		showDialog($stage.dialog.gwalli);
+	});
 	function updateGameOptions(opts, prefix){
 		var i, k;
-		
+
 		for(i in OPTIONS){
 			k = OPTIONS[i].name.toLowerCase();
 			if(opts.indexOf(i) == -1) $("#" + prefix + "-" + k + "-panel").hide();
@@ -425,17 +431,17 @@ $(document).ready(function(){
 	}
 	function getGameOptions(prefix){
 		var i, name, opts = {};
-		
+
 		for(i in OPTIONS){
 			name = OPTIONS[i].name.toLowerCase();
-			
+
 			if($("#" + prefix + "-" + name).is(':checked')) opts[name] = true;
 		}
 		return opts;
 	}
 	function isRoomMatched(room, mode, opts, all){
 		var i;
-		
+
 		if(!all){
 			if(room.gaming) return false;
 			if(room.password) return false;
@@ -449,7 +455,7 @@ $(document).ready(function(){
 		var val = $("#quick-mode").val();
 		var ct = 0;
 		var i, opts;
-		
+
 		if(e.currentTarget.id == "quick-mode"){
 			$("#QuickDiag .game-option").prop('checked', false);
 		}
@@ -473,7 +479,7 @@ $(document).ready(function(){
 	$stage.dialog.quickOK.on('click', function(e){
 		var mode = $("#quick-mode").val();
 		var opts = getGameOptions('quick');
-		
+
 		if(getOnly() != "for-lobby") return;
 		if($stage.dialog.quickOK.hasClass("searching")){
 			$stage.dialog.quick.hide();
@@ -487,7 +493,7 @@ $(document).ready(function(){
 		$data._quickT = addInterval(quickTick, 1000);
 		function quickTick(){
 			var i, arr = [];
-			
+
 			if(!$stage.dialog.quick.is(':visible')){
 				clearTimeout($data._quickT);
 				return;
@@ -509,7 +515,7 @@ $(document).ready(function(){
 		$("#game-mode-expl").html(L['modex' + v]);
 
 		updateGameOptions(rule.opts, 'room');
-		
+
 		$data._injpick = [];
 		if(rule.opts.indexOf("ijp") != -1) $("#room-injpick-panel").show();
 		else $("#room-injpick-panel").hide();
@@ -520,7 +526,7 @@ $(document).ready(function(){
 	}).trigger('change');
 	$stage.menu.spectate.on('click', function(e){
 		var mode = $stage.menu.spectate.hasClass("toggled");
-		
+
 		if(mode){
 			send('form', { mode: "J" });
 			$stage.menu.spectate.removeClass("toggled");
@@ -541,10 +547,10 @@ $(document).ready(function(){
 	$(".shop-type").on('click', function(e){
 		var $target = $(e.currentTarget);
 		var type = $target.attr('id').slice(10);
-		
+
 		$(".shop-type.selected").removeClass("selected");
 		$target.addClass("selected");
-		
+
 		filterShop(type == 'all' || $target.attr('value'));
 	});
 	$stage.menu.dict.on('click', function(e){
@@ -642,7 +648,7 @@ $(document).ready(function(){
 	$stage.dialog.practiceOK.on('click', function(e){
 		var level = $("#practice-level").val();
 		var team = $("#ai-team").val();
-		
+
 		$stage.dialog.practice.hide();
 		if($("#PracticeDiag .dialog-title").html() == L['robot']){
 			send('setAI', { target: $data._profiled, level: level, team: team });
@@ -706,7 +712,7 @@ $(document).ready(function(){
 	});
 	$stage.dialog.dictInjeong.on('click', function(e){
 		var $target = $(e.currentTarget);
-		
+
 		if($target.is(':disabled')) return;
 		if(!$("#dict-theme").val()) return;
 		$target.prop('disabled', true);
@@ -716,13 +722,13 @@ $(document).ready(function(){
 				$target.prop('disabled', false);
 			}, 2000);
 			if(res.error) return $("#dict-output").html(res.error + ": " + L['wpFail_' + res.error]);
-			
+
 			$("#dict-output").html(L['wpSuccess'] + "(" + res.message + ")");
 		});
 	});
 	$stage.dialog.dictSearch.on('click', function(e){
 		var $target = $(e.currentTarget);
-		
+
 		if($target.is(':disabled')) return;
 		$target.prop('disabled', true);
 		$("#dict-output").html(L['searching']);
@@ -731,7 +737,7 @@ $(document).ready(function(){
 				$target.prop('disabled', false);
 			}, 500);
 			if(res.error) return $("#dict-output").html(res.error + ": " + L['wpFail_' + res.error]);
-			
+
 			$("#dict-output").html(processWord(res.word, res.mean, res.theme, res.type.split(',')));
 		});
 	}).hotkey($("#dict-input"), 13);
@@ -741,7 +747,7 @@ $(document).ready(function(){
 		if(!(t = $("#wp-input").val())) return;
 		t = t.replace(/[^a-z가-힣]/g, "");
 		if(t.length < 2) return;
-		
+
 		$("#wp-input").val("");
 		$(e.currentTarget).addClass("searching").html("<i class='fa fa-spin fa-spinner'></i>");
 		send('wp', { value: t });
@@ -765,13 +771,13 @@ $(document).ready(function(){
 	});
 	$stage.dialog.profileShut.on('click', function(e){
 		var o = $data.users[$data._profiled];
-		
+
 		if(!o) return;
 		toggleShutBlock(o.profile.title || o.profile.name);
 	});
 	$stage.dialog.profileWhisper.on('click', function(e){
 		var o = $data.users[$data._profiled];
-		
+
 		$stage.talk.val("/e " + (o.profile.title || o.profile.name).replace(/\s/g, "") + " ").focus();
 	});
 	$stage.dialog.profileDress.on('click', function(e){
@@ -780,7 +786,7 @@ $(document).ready(function(){
 		if($data._gaming) return fail(438);
 		if(showDialog($stage.dialog.dress)) $.get("/box", function(res){
 			if(res.error) return fail(res.error);
-			
+
 			$data.box = res;
 			drawMyDress();
 		});
@@ -790,17 +796,17 @@ $(document).ready(function(){
 		$.post("/exordial", { data: $("#dress-exordial").val() }, function(res){
 			$stage.dialog.dressOK.attr('disabled', false);
 			if(res.error) return fail(res.error);
-			
+
 			$stage.dialog.dress.hide();
 		});
 	});
 	$("#DressDiag .dress-type").on('click', function(e){
 		var $target = $(e.currentTarget);
 		var type = $target.attr('id').slice(11);
-		
+
 		$(".dress-type.selected").removeClass("selected");
 		$target.addClass("selected");
-		
+
 		drawMyGoods(type == 'all' || $target.attr('value'));
 	});
 	$("#dress-cf").on('click', function(e){
@@ -810,17 +816,17 @@ $(document).ready(function(){
 	$stage.dialog.cfCompose.on('click', function(e){
 		if(!$stage.dialog.cfCompose.hasClass("cf-composable")) return fail(436);
 		if(!confirm(L['cfSureCompose'])) return;
-		
+
 		$.post("/cf", { tray: $data._tray.join('|') }, function(res){
 			var i;
-			
+
 			if(res.error) return fail(res.error);
 			send('refresh');
 			alert(L['cfComposed']);
 			$data.users[$data.id].money = res.money;
 			$data.box = res.box;
 			for(i in res.gain) queueObtain(res.gain[i]);
-			
+
 			drawMyDress($data._avGroup);
 			updateMe();
 			drawCharFactory();
@@ -829,7 +835,7 @@ $(document).ready(function(){
 	$("#room-injeong-pick").on('click', function(e){
 		var rule = RULE[MODE[$("#room-mode").val()]];
 		var i;
-		
+
 		$("#injpick-list>div").hide();
 		if(rule.lang == "ko"){
 			$data._ijkey = "#ko-pick-";
@@ -853,11 +859,11 @@ $(document).ready(function(){
 	$stage.dialog.injPickOK.on('click', function(e){
 		var $target = $($data._ijkey + "list");
 		var list = [];
-		
+
 		$data._injpick = $target.find("input").each(function(i, o){
 			var $o = $(o);
 			var id = $o.attr('id').slice(8);
-			
+
 			if($o.is(':checked')) list.push(id);
 		});
 		$data._injpick = list;
@@ -876,7 +882,7 @@ $(document).ready(function(){
 	$stage.dialog.purchaseOK.on('click', function(e){
 		$.post("/buy/" + $data._sgood, function(res){
 			var my = $data.users[$data.id];
-			
+
 			if(res.error) return fail(res.error);
 			alert(L['purchased']);
 			my.money = res.money;
@@ -890,14 +896,14 @@ $(document).ready(function(){
 	});
 	$stage.dialog.obtainOK.on('click', function(e){
 		var obj = $data._obtain.shift();
-		
+
 		if(obj) drawObtain(obj);
 		else $stage.dialog.obtain.hide();
 	});
 	for(i=0; i<5; i++) $("#team-" + i).on('click', onTeam);
 	function onTeam(e){
 		if($(".team-selector").hasClass("team-unable")) return;
-		
+
 		send('team', { value: $(e.currentTarget).attr('id').slice(5) });
 	}
 // 리플레이
@@ -910,14 +916,14 @@ $(document).ready(function(){
 		var $date = $("#replay-date").html("-");
 		var $version = $("#replay-version").html("-");
 		var $players = $("#replay-players").html("-");
-	
+
 		$rec = false;
 		$stage.dialog.replayView.attr('disabled', true);
 		if(!file) return;
 		reader.readAsText(file);
 		reader.onload = function(e){
 			var i, data;
-			
+
 			try{
 				data = JSON.parse(e.target.result);
 				$date.html((new Date(data.time)).toLocaleString());
@@ -926,7 +932,7 @@ $(document).ready(function(){
 				for(i in data.players){
 					var u = data.players[i];
 					var $p;
-					
+
 					$players.append($p = $("<div>").addClass("replay-player-bar ellipse")
 						.html(u.title)
 						.prepend(getLevelImage(u.data.score).addClass("users-level"))
@@ -944,7 +950,7 @@ $(document).ready(function(){
 	$stage.dialog.replayView.on('click', function(e){
 		replayReady();
 	});
-	
+
 // 스팸
 	addInterval(function(){
 		if(spamCount > 0) spamCount = 0;
@@ -978,7 +984,7 @@ $(document).ready(function(){
 		};
 		ws.onclose = function(e){
 			var ct = L['closed'] + " (#" + e.code + ")";
-			
+
 			if(rws) rws.close();
 			stopAllSounds();
 			alert(ct);
