@@ -382,6 +382,7 @@
 		"theme_KMV": "한국 영화",
 		"theme_HDC": "함대 컬렉션",
 		"theme_HOS": "히어로즈 오브 더 스톰",
+		"theme_MNC": "Minecraft",
 
 		"class_1": "명",
 		"class_2": "대명",
@@ -589,9 +590,6 @@
 		"sortUser": "접속자 목록 레벨 순 정렬",
 		"onlyWaiting": "대기 중인 방만 보기",
 		"onlyUnlock": "열려 있는 방만 보기",
-		"theme":    "Theme",
-		"themeLight": "Light theme",
-		"themeDark": "Dark theme",
 		"prevPage": "이전",
 		"myRank": "내 순위",
 		"nextPage": "다음",
