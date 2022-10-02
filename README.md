@@ -1,3 +1,7 @@
+# NuKKuTu
+규칙 없는 끄투, NuKKuTu.
+이 리포지토리에 있는 소스는 오래되지 않은 이상 일부 민감한 리소스를 제외하고 서버에서 실행되는 소스와 동일합니다.
+
 # KKuTu
 - Made by [JJoriping](http://blog.jjo.kr/)
 - Special thanks to
