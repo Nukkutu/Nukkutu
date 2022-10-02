@@ -1,54 +1,244 @@
-//-
-	Rule the words! KKuTu Online
-	Copyright (C) 2017 JJoriping(op@jjo.kr)
+-
+	var SESSION = locals.session;
 
-	This program is free software: you can redistribute it and/or modify
-	it under the terms of the GNU General Public License as published by
-	the Free Software Foundation, either version 3 of the License, or
-	(at your option) any later version.
-
-	This program is distributed in the hope that it will be useful,
-	but WITHOUT ANY WARRANTY; without even the implied warranty of
-	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-	GNU General Public License for more details.
-
-	You should have received a copy of the GNU General Public License
-	along with this program. If not, see <http://www.gnu.org/licenses/>.
-extends layout
-
-block Subject
-	title= L('TITLE')
-
-block CSS
-	link(rel='stylesheet', href='/css/in_game_kkutu.css')
-
-block Middle
-	+separator(5)
-	div(style='float: left; width: 100%;')
-		div(style='float: left; padding-left: 70px;')
-			h3#holder= L('title').replace(/\[.+?\]/g, "")
-			img#logo(src='/img/kkutu/short_logo.png')
-		div#menu-bar(style='float: right; margin-top: 25px;')
-			a(target='_blank', href='//', style='background-color: #63A95B;')= L('unknown')
-		div.jjoriping(style='margin-top: 40px;')
-			img.jjoObj.jjoEyeL(src='/img/jjoeyeL.png', style='left: -270px;')
-			img.jjoObj.jjoNose(src='/img/jjonose.png', style='left: -170px;')
-			img.jjoObj.jjoEyeR(src='/img/jjoeyeR.png', style='left: -70px;')
-			div.jjoDisplayBar(style='width: 325px; height: 85px;')
-				button#game-start.jjo-display= L('gameStart')
-	div(style='float: right; margin-top: -120px; width: 50%;')
-		div.server-list-box
-			h3.server-list-title
-				a#server-refresh
-					+FA('refresh')
-					+Expl(L('serverRefresh'))
-				label= L('serverList')
-				label#server-total(style='color: #AAA; font-size: 13px;')
-			div#server-list
-	div(style='float: left; width: calc(100% - 4px); border: 2px solid #CCC; margin-top: 10px; background-color: #EEE;')
-		iframe#kkutu-bulletin(width='100%', height='400px', src='/kkutu_bulletin.html')
-	+separator(10)
-
-block Bottom
-	div.bottom-legal!= L('dictionarySupport')
-	div.bottom-legal!= L('etcSupport')
+doctype html
+head
+	meta(charset='utf-8')
+	meta(http-equiv='X-UA-Compatible' content='IE=edge')
+	meta(name='viewport' content='width=device-width, initial-scale=1')
+	script(src='https://shoppy.gg/api/embed.js')
+	meta(name='description' content='Nukkutu')
+	meta(name='keywords' content='Nukkutu')
+	meta(name='author' content='Nukkutu')
+	meta(property='og:site' content='index')
+	meta(property='og:site_name' content='Nukkutu')
+	meta(property='og:title' content='nukkutu')
+	meta(name='theme-color' content='#3ccefa')
+	title NuKkutu
+	link(rel='stylesheet' href='assets/css/bootstrap.min.css')
+	link(rel='stylesheet' href='assets/css/line-icons.css')
+	link(rel='stylesheet' href='assets/css/animate.css')
+	link(rel='stylesheet' href='assets/css/main.css')
+	link(rel='shortcut icon' type='image/x-icon' href='assets/images/logo.ico')
+header.header.navbar-area
+	.container
+		.row.align-items-center
+			.col-lg-12
+				.nav-inner
+					nav.navbar.navbar-expand-lg
+						h1.ss
+							a(href='index')
+								img(src='assets/images/FoodByte.png' width='50' height='50')
+						button.navbar-toggler.mobile-menu-btn(type='button' data-bs-toggle='collapse' data-bs-target='#navbarSupportedContent' aria-controls='navbarSupportedContent' aria-expanded='false' aria-label='Toggle navigation')
+							span.toggler-icon
+							span.toggler-icon
+							span.toggler-icon
+						#navbarSupportedContent.collapse.navbar-collapse.sub-menu-bar
+							ul#nav.navbar-nav.ms-auto
+								li.nav-item
+									a.page-scroll.active(href='#home' aria-label='Toggle navigation') Home
+								li.nav-item
+									a.page-scroll(href='#features' aria-label='Toggle navigation') Features
+								li.nav-item
+									a.page-scroll(href='#video' aria-label='Toggle navigation') Videos
+								li.nav-item
+									a.page-scroll(href='#pricing' aria-label='Toggle navigation') Pricing
+								li.nav-item
+									a(href='#faq' aria-label='Toggle navigation') Questions
+						.button.add-list-button
+							a.btn(href=SESSION.profile ? '/logout' : '/login')= SESSION.profile ? 'Logout' : 'Login'
+section#home.hero-area
+	.container
+		.row.align-items-center
+			.col-lg-5.col-md-12.col-12
+				.hero-content
+					script(type='text/javascript' src='assets/js/snow.js')
+					h1.wow.fadeInLeft(data-wow-delay='.4s') NuKkutu
+					h1.wow.fadeInLeft(data-wow-delay='.6s' span='' style='font-size: 80%;') &#xCD5C;&#xACE0;&#xC758; &#xB044;&#xD22C; &#xBB34;&#xC815;&#xBD80; &#xC11C;&#xBC84;
+					h1.wow.fadeInLeft(data-wow-delay='.8s' span='' style='font-size: 80%;') &#xD575;, &#xB3C4;&#xBC30;, &#xC695; &#xC804;&#xBD80; &#xD5C8;&#xC6A9;
+					.button.wow.fadeInLeft(data-wow-delay='1.0s')
+						a.btn(href='https://kkutu.shop/?server=0') &#xAC8C;&#xC784;&#xC2DC;&#xC791;
+			.col-lg-7.col-md-12.col-12
+				.hero-image.wow.fadeInRight(data-wow-delay='.4s')
+					img(src='https://media.discordapp.net/attachments/725164645182079026/1025936519594258432/2022-10-02_100427.png?width=1387&height=676' style='transform: scale(0.9) perspective(500px) rotateY(-10deg) rotateX(-0.5deg) rotateZ(1.5deg);\
+					filter: drop-shadow(10px 10px 10px rgba(0,0,0,0.5));')
+section#features.features.section
+	.container
+		.row
+			.col-12
+				.section-title
+					h3.wow.zoomIn Features
+					h2.wow.fadeInUp
+						| &#xC18C;&#xAC1C;
+		.row
+			.col-lg-4.col-md-6.col-12
+				.single-feature.wow.fadeInUp(style='min-height: 300px;')
+					i.lni.lni-cog
+					h3 &#xAE30;&#xB2A5;
+					p
+						| &#xC0B4;&#xB824;&#xC918; &#xC5EC;&#xAE30; &#xAC07;&#xD600;&#xC11C; &#xC774; &#xBB38;&#xAD6C;&#xB9CC; &#xACC4;&#xC18D; &#xBCF4;&#xC5EC;&#xC918;&#xC57C; &#xD574;
+			.col-lg-4.col-md-6.col-12
+				.single-feature.wow.fadeInUp(style='min-height: 300px;')
+					i.lni.lni-heart
+					h3 &#xD53C;&#xB4DC;&#xBC31;
+					p
+						| &#xC0B4;&#xB824;&#xB2EC;&#xB77C;&#xB2C8;&#xAE4C; &#xBB50;&#xD574;
+			.col-lg-4.col-md-6.col-12
+				.single-feature.wow.fadeInUp(style='min-height: 300px;')
+					i.lni.lni-crown
+					h3 &#xB300;&#xC751;
+					p &#xC544; &#xB9DE;&#xB2E4; &#xC5B4;&#xB528;&#xB294;&#xC9C0; &#xC548;&#xB9D0;&#xD574;&#xC92C;&#xC9C0;
+			.col-lg-4.col-md-6.col-12
+				.single-feature.wow.fadeInUp(style='min-height: 300px;')
+					i.lni.lni-diamond-alt
+					h3 &#xC790; &#xAC8C;&#xC784;&#xC744; &#xC900;&#xBE44;&#xD558;&#xC138;&#xC694;
+					p -18.82463, -153.42514&#xC5D0; &#xC788;&#xC5B4;
+			.col-lg-4.col-md-6.col-12
+				.single-feature.wow.fadeInUp(style='min-height: 300px;')
+					i.lni.lni-rocket
+					h3 &#xD504;&#xB9AC;&#xBBF8;&#xC5C4;
+					p &#xC544;&#xB2C8; &#xC65C; &#xC548;&#xC640;
+			.col-lg-4.col-md-6.col-12
+				.single-feature.wow.fadeInUp(style='min-height: 300px;')
+					i.lni.lni-bubble
+					h3 &#xBE60;&#xB978; &#xB3C4;&#xC6C0;
+					p
+						| &#xB108;&#xBB34; &#xBA40;&#xB2E4;&#xACE0;? &#xD558;... &#xC601;&#xC6D0;&#xD788; &#xAC07;&#xD600;&#xC0AC;&#xB294;&#xAC74;&#xAC00;?
+//
+	这是一段注释。注释不会在浏览器中显示
+	<section class="our-achievement section">
+section#video.our-achievement.section
+	.container
+		.row
+			.col-lg-10.offset-lg-1.col-md-12.col-12
+				.section-title
+					h3.wow.zoomIn(data-wow-delay='.2s') Videos
+					h2.wow.fadeInUp(data-wow-delay='.4s') Screenshots and Videos
+			.hero-image.wow.fadeInUp(data-wow-delay='.6s')
+				img(src='https://media.discordapp.net/attachments/725164645182079026/1025940779849490443/unknown.png?width=1199&height=676' width='320' height='180')
+				img(src='https://media.discordapp.net/attachments/725164645182079026/1025940870530334780/unknown.png?width=1202&height=676' width='320' height='180')
+				img(src='https://media.discordapp.net/attachments/725164645182079026/1025940926964707348/unknown.png?width=1202&height=676' width='320' height='180')
+				img(src='https://media.discordapp.net/attachments/725164645182079026/1025941031411273788/unknown.png?width=1205&height=676' width='320' height='180')
+section#pricing.pricing-table.section
+	.container
+		.row
+			.col-12
+				.section-title
+					h3.wow.zoomIn(data-wow-delay='.2s') &#xAC00;&#xACA9;
+					h2.wow.fadeInUp(data-wow-delay='.4s') &#xD50C;&#xB79C; &#xAC00;&#xACA9;
+					p.wow.fadeInUp(data-wow-delay='.6s') &#xADF8;&#xCABD;&#xC774; &#xD544;&#xC694;&#xD55C;&#xAC70; &#xAD6C;&#xB9E4; &#x3131;&#x3131;
+		.row
+			.horizontal-center
+				.col-lg-3.col-md-6.col-12(style='padding: 0.5%;')
+					.single-table.wow.fadeInUp(data-wow-delay='.6s')
+						.table-head
+							h4.title
+								| VIP
+								span(style='font-size: 60%;') (Not Bed)
+							p &#xD3C9;&#xC0DD; VIP&#xC758; &#xD61C;&#xD0DD;&#xC744;
+							.price
+								h2.amount
+									| 3000&#xC6D0;
+									span.duration /Lifetime
+							.button
+								a.btn(href='https://discord.gg/QUDqpp3HRR') Purchase
+						.table-content
+							h4.middle-title What&apos;s Included
+							ul.table-list
+								li
+									i.lni.lni-checkmark-circle
+									|  &#xC774;&#xC05C; &#xCE58;&#xC7A5;&#xD488;
+								li
+									i.lni.lni-checkmark-circle
+									|  Fastly Support
+								li
+									i.lni.lni-checkmark-circle
+									|  &#xAC8C;&#xC784;&#xC5D0;&#xC11C; &#xD280;&#xB294; &#xD6A8;&#xACFC;
+								li
+									i.lni.lni-checkmark-circle
+									|  VIP &#xD718;&#xC7A5;(&#xCE6D;&#xD638;)
+				.col-lg-3.col-md-6.col-12(style='padding: 0.5%;')
+					.single-table.wow.fadeInUp(data-wow-delay='.8s')
+						.table-head
+							h4.title
+								| &#xD3C9;&#xC0DD;&#xAD8C;
+								span(style='font-size: 60%;') (Best)
+							p &#xD3C9;&#xC0DD;, &#xCD5C;&#xACE0;&#xC758; &#xD6A8;&#xC728;, MVP&#xC758; &#xD5E4;&#xD0DD;&#xC744;
+							.price
+								h2.amount
+									| 5000&#xC6D0;
+									span.duration /Lifetime
+							.button
+								a.btn(href='https://discord.gg/QUDqpp3HRR') Purchase
+						.table-content
+							h4.middle-title What&apos;s Included
+							ul.table-list
+								li
+									i.lni.lni-checkmark-circle
+									|  Premium, Fastly Support
+								li
+									i.lni.lni-checkmark-circle
+									|  Frequent Updates
+								li
+									i.lni.lni-checkmark-circle
+									|  VIP&#xBCF4;&#xB2E4; &#xB354; &#xC774;&#xC05C; &#xCE58;&#xC7A5;&#xD488;
+								li
+									i.lni.lni-checkmark-circle
+									|  &#xAC8C;&#xC784;&#xC5D0;&#xC11C; &#xD280;&#xB294; &#xD6A8;&#xACFC;
+								li
+									i.lni.lni-checkmark-circle
+									|  MVP &#xD718;&#xC7A5;(&#xCE6D;&#xD638;)
+section#faq.faq.section
+	.container
+		.row
+			.col-12
+				.section-title
+					h3.wow.zoomIn(data-wow-delay='.2s') FAQ
+		.row
+			.col-12
+				#accordionExample.accordion
+					.accordion-item
+						h2#headingOne.accordion-header
+							button.accordion-button.collapsed(type='button' data-bs-toggle='collapse' aria-expanded='false' data-bs-target='#collapseOne' aria-controls='collapseOne')
+								span.title
+									span.serial 1
+									| &#xC815;&#xB9D0; &#xADDC;&#xCE59;&#xC774; &#xC5C6;&#xC5B4;&#xC694;?
+								i.lni.lni-plus
+						#collapseOne.accordion-collapse.collapse(aria-labelledby='headingOne' data-bs-parent='#accordionExample')
+							.accordion-body
+								p &#xB124; &#xC6B0;&#xB9AC; &#xC11C;&#xBC84;&#xB294; &#xC11C;&#xBC84;&#xC5D0; &#xC9C0;&#xC7A5;(DDoS)&#xC678;&#xC5D0; &#xC804;&#xBD80; &#xD5C8;&#xC6A9;&#xD569;&#xB2C8;&#xB2E4; &#xD575;, &#xBE44;&#xC18D;&#xC5B4;, &#xD328;&#xB4DC;&#xB9BD;, &#xC695; &#xC804;&#xBD80; &#xD5C8;&#xC6A9;&#xB429;&#xB2C8;&#xB2E4;.
+					.accordion-item
+						h2#headingTwo.accordion-header
+							button.accordion-button.collapsed(type='button' data-bs-toggle='collapse' aria-expanded='false' data-bs-target='#collapseTwo' aria-controls='collapseTwo')
+								span.title
+									span.serial 2
+									| &#xD639;&#xC2DC; &#xB044;&#xD22C;&#xC5D0; &#xC4F8;&#xB9CC;&#xD55C; &#xD575; &#xC788;&#xB098;&#xC694;?
+								i.lni.lni-plus
+						#collapseTwo.accordion-collapse.collapse(aria-labelledby='headingTwo' data-bs-parent='#accordionExample')
+							.accordion-body
+								p
+									| &#xB124; &#xC788;&#xC2B5;&#xB2C8;&#xB2E4; &quot;Nucleus&quot;&#xB85C; &#xB044;&#xD22C; &#xD575;&#xC744; &#xC800;&#xB834;&#xD558;&#xAC8C; &#xAD6C;&#xC785;&#xD558;&#xC5EC; &#xC0AC;&#xC6A9;&#xD558;&#xC138;&#xC694;.
+									a(href='https://nucleus.mcv.kr/') https://nucleus.mcv.kr
+					.accordion-item
+						h2#headingThree.accordion-header
+							button.accordion-button.collapsed(type='button' data-bs-toggle='collapse' aria-expanded='false' data-bs-target='#collapseThree' aria-controls='collapseThree')
+								span.title
+									span.serial 3
+									| &#xC544; &#xC2EC;&#xC2EC;&#xD558;&#xB2E4;
+								i.lni.lni-plus
+						#collapseThree.accordion-collapse.collapse(aria-labelledby='headingThree' data-bs-parent='#accordionExample')
+							.accordion-body
+								p &#xC9C0;&#xB784; &#xB9C8;&#xC148; &#xC2EC;&#xC2EC;&#xD558;&#xC11C; &#xB9CC;&#xB4E0;&#xAC70;
+footer.footer
+	.footer-top
+		.container
+			.row
+				.col-lg-4.col-md-4.col-12.horizontal-center(style='text-align: center;')
+					.single-footer.f-about
+						| &amp;copy &quot;NuKKuTu&#xB294; &#xBD84;&#xBA85;&#xD788; &#xC800;&#xC791;&#xAD8C;&#xC774; &#xC788;&#xC9C0;&#xB9CC; &#xB204;&#xAD6C;&#xC5D0;&#xAC8C; &#xC788;&#xB294;&#xC9C0;&#xB294; &#xBB3C;&#xC5B4;&#xBCF4;&#xC138;&#xC694;&quot; @2022
+a.scroll-top(href='#')
+	i.lni.lni-chevron-up
+script(src='assets/js/bootstrap.min.js')
+script(src='assets/js/wow.min.js')
+script(src='assets/js/count-up.min.js')
+script(src='assets/js/main.js')
