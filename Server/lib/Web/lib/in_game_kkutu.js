@@ -2470,7 +2470,6 @@ function welcome(){
 	}, 2000);
 
 	if($data.admin) console.log("관리자 모드");
-	else $("#GwalliBtn").hide();
 }
 function getKickText(profile, vote){
 	var vv = L['agree'] + " " + vote.Y + ", " + L['disagree'] + " " + vote.N + L['kickCon'];
@@ -2769,6 +2768,7 @@ function updateUI(myRoom, refresh){
 	$data._only = only;
 	setLocation($data.place);
 	$(".kkutu-menu ."+only).show();
+	if ($data.admin) $(".kkutu-menu .for-admin").show();
 }
 function animModified(cls){
 	$(cls).addClass("room-head-modified");
@@ -4601,7 +4601,8 @@ function forkChat(){
 	$stage.chat.scrollTop(999999999);
 }
 function badWords(text){
-	return text.replace(BAD, "♥♥");
+	// return text.replace(BAD, "♥♥");
+	return text;
 }
 function chatBalloon(text, id, flag){
 	$("#cb-" + id).remove();
