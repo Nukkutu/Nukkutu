@@ -1046,6 +1046,8 @@ $(document).ready(function(){
 			$.get("/kkutu_notice.html", function(res){
 				loading(res);
 			});
+
+			location.href = "/";
 		};
 		ws.onerror = function(e){
 			console.warn(L['error'], e);

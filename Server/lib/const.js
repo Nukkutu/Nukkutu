@@ -232,9 +232,13 @@ exports.REGION = {
 	'ko': "kr"
 };
 exports.KOR_STRICT = /(^|,)(1|INJEONG)($|,)/;
+// exports.KOR_GROUP = new RegExp("(,|^)(" + [
+// 	"0", "1", "3", "7", "8", "11", "9",
+// 	"16", "15", "17", "2", "18", "20", "26", "19",
+// 	"INJEONG"
+// ].join('|') + ")(,|$)");
 exports.KOR_GROUP = new RegExp("(,|^)(" + [
-	"0", "1", "3", "7", "8", "11", "9",
-	"16", "15", "17", "2", "18", "20", "26", "19",
+	"\\d+",
 	"INJEONG"
 ].join('|') + ")(,|$)");
 exports.ENG_ID = /^[a-z]+$/i;
