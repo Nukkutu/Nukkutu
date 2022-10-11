@@ -1,17 +1,17 @@
 /**
  * Rule the words! KKuTu Online
  * Copyright (C) 2017 JJoriping(op@jjo.kr)
- * 
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
@@ -19,11 +19,12 @@
 var Web		 = require("request");
 var MainDB	 = require("../db");
 var JLog	 = require("../../sub/jjlog");
+var GLOBAL	 = require("../../sub/global.json");
 var Const	 = require("../../const");
 
 function obtain($user, key, value, term, addValue){
 	var now = (new Date()).getTime();
-	
+
 	if(term){
 		if($user.box[key]){
 			if(addValue) $user.box[key].value += value;
@@ -35,7 +36,7 @@ function obtain($user, key, value, term, addValue){
 }
 function consume($user, key, value, force){
 	var bd = $user.box[key];
-	
+
 	if(bd.value){
 		// 기한이 끝날 때까지 box 자체에서 사라지지는 않는다. 기한 만료 여부 확인 시점: 1. 로그인 2. box 조회 3. 게임 결과 반영 직전 4. 해당 항목 사용 직전
 		if((bd.value -= value) <= 0){
@@ -72,7 +73,7 @@ Server.get("/help", function(req, res){
 Server.get("/ranking", function(req, res){
 	var pg = Number(req.query.p);
 	var id = req.query.id;
-	
+
 	if(id){
 		MainDB.redis.getSurround(id, 15).then(function($body){
 			res.send($body);
@@ -89,10 +90,10 @@ Server.get("/injeong/:word", function(req, res){
 	var word = req.params.word;
 	var theme = req.query.theme;
 	var now = Date.now();
-	
+
 	if(now - req.session.injBefore < 2000) return res.send({ error: 429 });
 	req.session.injBefore = now;
-	
+
 	MainDB.kkutu['ko'].findOne([ '_id', word.replace(/[^가-힣0-9]/g, "") ]).on(function($word){
 		if($word) return res.send({ error: 409 });
 		MainDB.kkutu_injeong.findOne([ '_id', word ]).on(function($ij){
@@ -121,21 +122,39 @@ Server.get("/shop", function(req, res){
 });
 
 // POST
-Server.post("/exordial", function(req, res){
-	var text = req.body.data || "";
-	
+Server.post("/profile", function(req, res){
+	var nickname = req.body.nickname;
+	var exordial = req.body.exordial;
+
 	if(req.session.profile){
-		text = text.slice(0, 100);
-		MainDB.users.update([ '_id', req.session.profile.id ]).set([ 'exordial', text ]).on(function($res){
-			res.send({ text: text });
-		});
-	}else res.send({ error: 400 });
+		if(exordial !== undefined)
+			MainDB.users.update([ '_id', req.session.profile.id ]).set([ 'exordial', exordial.slice(0, 100) ]).on();
+
+		if(nickname){
+			if(nickname.length > 12) nickname = nickname.slice(0, 12);
+			MainDB.users.findOne([ 'nickname', nickname ]).on(function(data){
+				MainDB.users.findOne([ '_id', req.session.profile.id ]).on(function(requester){
+					var changedDate = new Date(Number(requester.nickChanged));
+					var now = Number(new Date());
+
+					changedDate.setDate(changedDate.getDate() + GLOBAL.NICKNAME_LIMIT.TERM);
+					if(GLOBAL.NICKNAME_LIMIT.TERM > 0 && now < Number(changedDate)) return res.send({ error: 457 });
+					if(data) return res.send({ error: 456 });
+
+					MainDB.users.update([ '_id', req.session.profile.id ]).set([ 'nickname', nickname ], [ 'nickChanged', now ]).on();
+					req.session.profile = { ...req.session.profile, name: nickname, title: nickname, nickname };
+					MainDB.session.update([ '_id', req.session.id ]).set([ 'profile', req.session.profile ]).on();
+					return res.send({ result: 200 });
+				});
+			});
+		}else return res.send({ result: 200 });
+	}else return res.send({ error: 400 });
 });
 Server.post("/buy/:id", function(req, res){
 	if(req.session.profile){
 		var uid = req.session.profile.id;
 		var gid = req.params.id;
-		
+
 		MainDB.kkutu_shop.findOne([ '_id', gid ]).on(function($item){
 			if(!$item) return res.json({ error: 400 });
 			if($item.cost < 0) return res.json({ error: 400 });
@@ -143,9 +162,9 @@ Server.post("/buy/:id", function(req, res){
 				if(!$user) return res.json({ error: 400 });
 				if(!$user.box) $user.box = {};
 				var postM = $user.money - $item.cost;
-				
+
 				if(postM < 0) return res.send({ result: 400 });
-				
+
 				obtain($user, gid, 1, $item.term);
 				MainDB.users.update([ '_id', uid ]).set(
 					[ 'money', postM ],
@@ -166,22 +185,22 @@ Server.post("/equip/:id", function(req, res){
 	var gid = req.params.id;
 	var isLeft = req.body.isLeft == "true";
 	var now = Date.now() * 0.001;
-	
+
 	MainDB.users.findOne([ '_id', uid ]).limit([ 'box', true ], [ 'equip', true ]).on(function($user){
 		if(!$user) return res.json({ error: 400 });
 		if(!$user.box) $user.box = {};
 		if(!$user.equip) $user.equip = {};
 		var q = $user.box[gid], r;
-		
+
 		MainDB.kkutu_shop.findOne([ '_id', gid ]).limit([ 'group', true ]).on(function($item){
 			if(!$item) return res.json({ error: 430 });
 			if(!Const.AVAIL_EQUIP.includes($item.group)) return res.json({ error: 400 });
-			
+
 			var part = $item.group;
 			if(part.substr(0, 3) == "BDG") part = "BDG";
 			if(part == "Mhand") part = isLeft ? "Mlhand" : "Mrhand";
 			var qid = $user.equip[part];
-			
+
 			if(qid){
 				r = $user.box[qid];
 				if(r && r.expire){
@@ -208,16 +227,16 @@ Server.post("/payback/:id", function(req, res){
 	var uid = req.session.profile.id;
 	var gid = req.params.id;
 	var isDyn = gid.charAt() == '$';
-	
+
 	MainDB.users.findOne([ '_id', uid ]).limit([ 'money', true ], [ 'box', true ]).on(function($user){
 		if(!$user) return res.json({ error: 400 });
 		if(!$user.box) $user.box = {};
 		var q = $user.box[gid];
-		
+
 		if(!q) return res.json({ error: 430 });
 		MainDB.kkutu_shop.findOne([ '_id', isDyn ? gid.slice(0, 4) : gid ]).limit([ 'cost', true ]).on(function($item){
 			if(!$item) return res.json({ error: 430 });
-			
+
 			consume($user, gid, 1, true);
 			$user.money = Number($user.money) + Math.round(0.2 * Number($item.cost));
 			MainDB.users.update([ '_id', uid ]).set([ 'money', $user.money ], [ 'box', $user.box ]).on(function($res){
@@ -230,12 +249,12 @@ function blendWord(word){
 	var lang = parseLanguage(word);
 	var i, kl = [];
 	var kr = [];
-	
+
 	if(lang == "en") return String.fromCharCode(97 + Math.floor(Math.random() * 26));
 	if(lang == "ko"){
 		for(i=word.length-1; i>=0; i--){
 			var k = word.charCodeAt(i) - 0xAC00;
-			
+
 			kl.push([ Math.floor(k/28/21), Math.floor(k/28)%21, k%28 ]);
 		}
 		[0,1,2].sort((a, b) => (Math.random() < 0.5)).forEach((v, i) => {
@@ -252,7 +271,7 @@ Server.post("/cf", function(req, res){
 	var uid = req.session.profile.id;
 	var tray = (req.body.tray || "").split('|');
 	var i, o;
-	
+
 	if(tray.length < 1 || tray.length > 6) return res.json({ error: 400 });
 	MainDB.users.findOne([ '_id', uid ]).limit([ 'money', true ], [ 'box', true ]).on(function($user){
 		if(!$user) return res.json({ error: 400 });
@@ -260,7 +279,7 @@ Server.post("/cf", function(req, res){
 		var req = {}, word = "", level = 0;
 		var cfr, gain = [];
 		var blend;
-		
+
 		for(i in tray){
 			word += tray[i].slice(4);
 			level += 68 - tray[i].charCodeAt(3);
@@ -278,7 +297,7 @@ Server.post("/cf", function(req, res){
 			for(i in req) consume($user, i, req[i]);
 			for(i in cfr.data){
 				o = cfr.data[i];
-				
+
 				if(Math.random() >= o.rate) continue;
 				if(o.key.charAt(4) == "?"){
 					o.key = o.key.slice(0, 4) + (blend ? blendWord(word) : word.charAt(Math.floor(Math.random() * word.length)));
@@ -298,7 +317,7 @@ Server.get("/dict/:word", function(req, res){
     var word = req.params.word;
     var lang = req.query.lang;
     var DB = MainDB.kkutu[lang];
-    
+
     if(!DB) return res.send({ error: 400 });
     if(!DB.findOne) return res.send({ error: 400 });
     DB.findOne([ '_id', word ]).on(function($word){
@@ -321,7 +340,7 @@ function getCFRewards(word, level, blend){
 	};
 	var cost = 20 * f.lev;
 	var wur = f.len / 36; // 최대 2.867
-	
+
 	if(blend){
 		if(wur >= 0.5){
 			R.push({ key: "$WPA?", value: 1, rate: 1 });

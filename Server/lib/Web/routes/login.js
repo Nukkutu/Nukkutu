@@ -1,17 +1,17 @@
 /**
  * Rule the words! KKuTu Online
  * Copyright (C) 2017 JJoriping(op@jjo.kr)
- * 
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
@@ -29,16 +29,18 @@ function process(req, accessToken, MainDB, $p, done) {
     $p.token = accessToken;
     $p.sid = req.session.id;
 
-    let now = Date.now();
+    const now = Date.now();
     $p.sid = req.session.id;
     req.session.admin = GLOBAL.ADMIN.includes($p.id);
     req.session.authType = $p.authType;
-    MainDB.session.upsert([ '_id', req.session.id ]).set({
-        'profile': $p,
-        'createdAt': now
-    }).on();
+
     MainDB.users.findOne([ '_id', $p.id ]).on(($body) => {
-        req.session.profile = $p;
+		$p.nickname = $p.title = $p.name = $body ? $body.nickname : $p.title || $p.name;
+		req.session.profile = $p;
+		MainDB.session.upsert([ '_id', req.session.id ]).set({
+			'profile': $p,
+			'createdAt': now
+		}).on();
         MainDB.users.update([ '_id', $p.id ]).set([ 'lastLogin', now ]).on();
     });
 
@@ -56,7 +58,7 @@ exports.run = (Server, page) => {
     });
 
     const strategyList = {};
-    
+
 	for (let i in config) {
 		try {
 			let auth = require(path.resolve(__dirname, '..', 'auth', 'auth_' + i + '.js'))
@@ -79,7 +81,7 @@ exports.run = (Server, page) => {
 			JLog.error(error.message)
 		}
 	}
-	
+
 	Server.get("/login", (req, res) => {
 		if(global.isPublic){
 			page(req, res, "login", { '_id': req.session.id, 'text': req.query.desc, 'loginList': strategyList});
