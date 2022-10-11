@@ -505,8 +505,8 @@ function joinNewUser($c) {
 	narrateFriends($c.id, $c.friends, "on");
 	KKuTu.publish('conn', {user: $c.getData()});
 
-	/* 이 부분의 주석을 풀면 유저분들의 정보를 알아서 주기적으로 갱신합니다.
-		그러나 접속자 수가 많아질 경우 서버에 부담이 될 수 있습니다.
+	// 이 부분의 주석을 풀면 유저분들의 정보를 알아서 주기적으로 갱신합니다.
+	// 그러나 접속자 수가 많아질 경우 서버에 부담이 될 수 있습니다.
 	setInterval(() => {
 		$c.send('reloadData', {
 			id: $c.id,
@@ -517,7 +517,6 @@ function joinNewUser($c) {
 			friends: $c.friends
 		});
 	}, 18000);
-	*/
 
 	JLog.info("New user #" + $c.id);
 }
