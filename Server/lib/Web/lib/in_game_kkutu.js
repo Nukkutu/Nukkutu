@@ -1075,17 +1075,17 @@ $(document).ready(function(){
 /**
  * Rule the words! KKuTu Online
  * Copyright (C) 2017 JJoriping(op@jjo.kr)
- * 
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
@@ -1093,7 +1093,7 @@ $(document).ready(function(){
 $lib.Classic.roundReady = function(data){
 	var i, len = $data.room.game.title.length;
 	var $l;
-	
+
 	clearBoard();
 	$data._roundTime = $data.room.time * 1000;
 	$stage.game.display.html(getCharText(data.char, data.subChar));
@@ -1114,7 +1114,7 @@ $lib.Classic.turnStart = function(data){
 	if(!($data._tid = $data.room.game.seq[data.turn])) return;
 	if($data._tid.robot) $data._tid = $data._tid.id;
 	data.id = $data._tid;
-	
+
 	$stage.game.display.html($data._char = getCharText(data.char, data.subChar, data.wordLength));
 	$("#game-user-"+data.id).addClass("game-user-current");
 	if(!$data._replay){
@@ -1125,7 +1125,7 @@ $lib.Classic.turnStart = function(data){
 		}
 	}
 	$stage.game.items.html($data.mission = data.mission);
-	
+
 	ws.onmessage = _onMessage;
 	clearInterval($data._tTime);
 	clearTrespasses();
@@ -1144,14 +1144,14 @@ $lib.Classic.turnGoing = function(){
 	if(!$data.room) clearInterval($data._tTime);
 	$data._turnTime -= TICK;
 	$data._roundTime -= TICK;
-	
+
 	$stage.game.turnBar
 		.width($data._timePercent())
 		.html(($data._turnTime*0.001).toFixed(1) + L['SECOND']);
 	$stage.game.roundBar
 		.width($data._roundTime/$data.room.time*0.1 + "%")
 		.html(($data._roundTime*0.001).toFixed(1) + L['SECOND']);
-	
+
 	if(!$stage.game.roundBar.hasClass("round-extreme")) if($data._roundTime <= 5000) $stage.game.roundBar.addClass("round-extreme");
 };
 $lib.Classic.turnEnd = function(id, data){
@@ -1160,7 +1160,7 @@ $lib.Classic.turnEnd = function(id, data){
 		.html((data.score > 0) ? ("+" + (data.score - data.bonus)) : data.score);
 	var $uc = $(".game-user-current");
 	var hi;
-	
+
 	if($data._turnSound) $data._turnSound.stop();
 	addScore(id, data.score);
 	clearInterval($data._tTime);
@@ -1181,7 +1181,7 @@ $lib.Classic.turnEnd = function(id, data){
 		data.hint = data.hint._id;
 		hi = data.hint.indexOf($data._chars[0]);
 		if(hi == -1) hi = data.hint.indexOf($data._chars[1]);
-		
+
 		if(MODE[$data.room.mode] == "KAP") $stage.game.display.empty()
 			.append($("<label>").css('color', "#AAAAAA").html(data.hint.slice(0, hi)))
 			.append($("<label>").html(data.hint.slice(hi)));
@@ -1194,7 +1194,7 @@ $lib.Classic.turnEnd = function(id, data){
 			var $bc = $("<div>")
 				.addClass("deltaScore bonus")
 				.html("+" + data.bonus);
-			
+
 			drawObtainedScore($uc, $bc);
 		}, 500);
 	}
@@ -4289,14 +4289,14 @@ function pushDisplay(text, mean, theme, wc){
 				.addClass("display-text")
 				.css({ 'float': isRev ? "right" : "left", 'margin-top': -6, 'font-size': 36 })
 				.hide()
-				.html(isRev ? text.charAt(len - j - 1) : text.charAt(j))
+				.text(isRev ? text.charAt(len - j - 1) : text.charAt(j))
 			);
 			j++;
 			addTimeout(function($l, snd){
 				var anim = { 'margin-top': 0 };
 
 				playSound(snd);
-				if($l.html() == $data.mission){
+				if($l.text() == $data.mission){
 					playSound('mission');
 					$l.css({ 'color': "#66FF66" });
 					anim['font-size'] = 24;
@@ -4315,9 +4315,9 @@ function pushDisplay(text, mean, theme, wc){
 				playSound(ta);
 				if(t == $data.mission){
 					playSound('mission');
-					j = "<label style='color: #66FF66;'>" + t + "</label>" + j;
+					j = "<label style='color: #66FF66;'>" + t.replace(/&/g, "&amp;").replace(/>/g, "&gt;").replace(/</g, "&lt;") + "</label>" + j;
 				}else{
-					j = t + j;
+					j = t.replace(/&/g, "&amp;").replace(/>/g, "&gt;").replace(/</g, "&lt;") + j;
 				}
 				$stage.game.display.html(j);
 			}, Number(i) * sg / len, text[len - i - 1]);
@@ -4327,9 +4327,9 @@ function pushDisplay(text, mean, theme, wc){
 				playSound(ta);
 				if(t == $data.mission){
 					playSound('mission');
-					j += "<label style='color: #66FF66;'>" + t + "</label>";
+					j += "<label style='color: #66FF66;'>" + t.replace(/&/g, "&amp;").replace(/>/g, "&gt;").replace(/</g, "&lt;") + "</label>";
 				}else{
-					j += t;
+					j += t.replace(/&/g, "&amp;").replace(/>/g, "&gt;").replace(/</g, "&lt;");
 				}
 				$stage.game.display.html(j);
 			}, Number(i) * sg / len, text[i]);
@@ -4372,7 +4372,7 @@ function pushHistory(text, mean, theme, wc){
 		.addClass("ellipse history-item")
 		.width(0)
 		.animate({ width: 200 })
-		.html(text)
+		.text(text)
 	);
 	$w = $stage.game.history.children();
 	if($w.length > 6){

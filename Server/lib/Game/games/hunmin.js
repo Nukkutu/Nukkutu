@@ -167,6 +167,9 @@ exports.submit = function(client, text, data){
 					else if(my.opts.strict && (!$doc.type.match(Const.KOR_STRICT) || $doc.flag >= 4)) denied(406);
 					else if(my.opts.loanword && ($doc.flag & Const.KOR_FLAG.LOANWORD)) denied(405);
 					else preApproved();
+				}else if (my.opts.any) {
+					if (!$doc) $doc = {};
+					preApproved();
 				}else{
 					denied();
 				}

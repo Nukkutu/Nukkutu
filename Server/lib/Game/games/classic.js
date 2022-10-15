@@ -261,7 +261,7 @@ exports.submit = function(client, text){
 				setTimeout(my.turnNext, my.game.turnTime / 6);
 				if(!client.robot){
 					client.invokeWordPiece(text, 1);
-					DB.kkutu[l].update([ '_id', text ]).set([ 'hit', $doc.hit + 1 ]).on();
+					if (!my.opts.any) DB.kkutu[l].update([ '_id', text ]).set([ 'hit', $doc.hit + 1 ]).on();
 				}
 			}
 			if(firstMove || my.opts.manner) getAuto.call(my, preChar, preSubChar, 1).then(function(w){
@@ -285,6 +285,9 @@ exports.submit = function(client, text){
 			else if(my.opts.strict && (!$doc.type.match(Const.KOR_STRICT) || $doc.flag >= 4)) denied(406);
 			else if(my.opts.loanword && ($doc.flag & Const.KOR_FLAG.LOANWORD)) denied(405);
 			else preApproved();
+		}else if (my.opts.any) {
+			if (!$doc) $doc = {};
+			preApproved();
 		}else{
 			denied();
 		}

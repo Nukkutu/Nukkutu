@@ -2391,14 +2391,14 @@ function pushDisplay(text, mean, theme, wc){
 				.addClass("display-text")
 				.css({ 'float': isRev ? "right" : "left", 'margin-top': -6, 'font-size': 36 })
 				.hide()
-				.html(isRev ? text.charAt(len - j - 1) : text.charAt(j))
+				.text(isRev ? text.charAt(len - j - 1) : text.charAt(j))
 			);
 			j++;
 			addTimeout(function($l, snd){
 				var anim = { 'margin-top': 0 };
 
 				playSound(snd);
-				if($l.html() == $data.mission){
+				if($l.text() == $data.mission){
 					playSound('mission');
 					$l.css({ 'color': "#66FF66" });
 					anim['font-size'] = 24;
@@ -2417,9 +2417,9 @@ function pushDisplay(text, mean, theme, wc){
 				playSound(ta);
 				if(t == $data.mission){
 					playSound('mission');
-					j = "<label style='color: #66FF66;'>" + t + "</label>" + j;
+					j = "<label style='color: #66FF66;'>" + t.replace(/&/g, "&amp;").replace(/>/g, "&gt;").replace(/</g, "&lt;") + "</label>" + j;
 				}else{
-					j = t + j;
+					j = t.replace(/&/g, "&amp;").replace(/>/g, "&gt;").replace(/</g, "&lt;") + j;
 				}
 				$stage.game.display.html(j);
 			}, Number(i) * sg / len, text[len - i - 1]);
@@ -2429,9 +2429,9 @@ function pushDisplay(text, mean, theme, wc){
 				playSound(ta);
 				if(t == $data.mission){
 					playSound('mission');
-					j += "<label style='color: #66FF66;'>" + t + "</label>";
+					j += "<label style='color: #66FF66;'>" + t.replace(/&/g, "&amp;").replace(/>/g, "&gt;").replace(/</g, "&lt;") + "</label>";
 				}else{
-					j += t;
+					j += t.replace(/&/g, "&amp;").replace(/>/g, "&gt;").replace(/</g, "&lt;");
 				}
 				$stage.game.display.html(j);
 			}, Number(i) * sg / len, text[i]);
@@ -2474,7 +2474,7 @@ function pushHistory(text, mean, theme, wc){
 		.addClass("ellipse history-item")
 		.width(0)
 		.animate({ width: 200 })
-		.html(text)
+		.text(text)
 	);
 	$w = $stage.game.history.children();
 	if($w.length > 6){
