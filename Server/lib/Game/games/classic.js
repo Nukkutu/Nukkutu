@@ -430,19 +430,49 @@ function getAuto(char, subc, type){
 	adc = char + (subc ? ("|"+subc) : "");
 	switch(gameType){
 		case 'EKT':
-			adv = `^(${adc})..`;
+			adv = `^(${adc.split("").map(function(char) {
+				if ("\\^$.|?*+()[]{}".split("").includes(char)) {
+					return "\\" + char;
+				} else {
+					return char;
+				}
+			}).join()})..`;
 			break;
 		case 'KSH':
-			adv = `^(${adc}).`;
+			adv = `^(${adc.split("").map(function(char) {
+				if ("\\^$.|?*+()[]{}".split("").includes(char)) {
+					return "\\" + char;
+				} else {
+					return char;
+				}
+			}).join()}).`;
 			break;
 		case 'ESH':
-			adv = `^(${adc})...`;
+			adv = `^(${adc.split("").map(function(char) {
+				if ("\\^$.|?*+()[]{}".split("").includes(char)) {
+					return "\\" + char;
+				} else {
+					return char;
+				}
+			}).join()})...`;
 			break;
 		case 'KKT':
-			adv = `^(${adc}).{${my.game.wordLength-1}}$`;
+			adv = `^(${adc.split("").map(function(char) {
+				if ("\\^$.|?*+()[]{}".split("").includes(char)) {
+					return "\\" + char;
+				} else {
+					return char;
+				}
+			}).join()}).{${my.game.wordLength-1}}$`;
 			break;
 		case 'KAP':
-			adv = `.(${adc})$`;
+			adv = `.(${adc.split("").map(function(char) {
+				if ("\\^$.|?*+()[]{}".split("").includes(char)) {
+					return "\\" + char;
+				} else {
+					return char;
+				}
+			}).join()})$`;
 			break;
 	}
 	if(!char){
